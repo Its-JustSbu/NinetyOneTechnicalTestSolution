@@ -10,6 +10,7 @@ namespace NinetyOneTechnicalTestSolution.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Scores>((entity) =>
             {
                 entity.HasKey(e => e.Id);
