@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="NinetyOneTechnicalTestSolution/NinetyOneTechnicalTestSolution.csproj" />
+  <Project Path="NinetyOneTechnicalTestSolutionTests/NinetyOneTechnicalTestSolutionTests.csproj" />
+</Solution>
