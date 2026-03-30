@@ -11,9 +11,9 @@ namespace NinetyOneTechnicalTestSolution.Repositories
         {
             _appDbContext = appDbContext;
         }
-        async Task IRepository.AddAsync<T>(T entity)
+        async Task IRepository.AddRangeAsync<T>(List<T> entities)
         {
-            await _appDbContext.Set<T>().AddAsync(entity);
+            await _appDbContext.Set<T>().AddRangeAsync(entities);
         }
 
         async Task<IList<T>> IRepository.GetAllAsync<T>()

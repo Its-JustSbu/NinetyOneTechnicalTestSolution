@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NinetyOneTechnicalTestSolution.Models.DTOs;
 using NinetyOneTechnicalTestSolution.Repositories;
+using NinetyOneTechnicalTestSolution.utils;
 
 namespace NinetyOneTechnicalTestSolution.Controllers
 {
@@ -10,9 +11,11 @@ namespace NinetyOneTechnicalTestSolution.Controllers
     public class MainController : ControllerBase
     {
         private readonly IRepository _repository;
-        public MainController(IRepository repository)
+        private readonly ICSVFileReader _csvFileReader;
+        public MainController(IRepository repository, ICSVFileReader cSVFileReader)
         {
             _repository = repository;
+            _csvFileReader = cSVFileReader;
         }
 
         // GET: api/Main
@@ -49,6 +52,32 @@ namespace NinetyOneTechnicalTestSolution.Controllers
                 if (scorers.Count == 0) return NotFound("No Top Scorers Found");
 
                 return Ok(scorers);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+                throw;
+            }
+        }
+
+        // POST: api/Main
+        [HttpPost("AddScore")]
+        public async Task<IActionResult> AddScore(IFormFile CSVFile)
+        {
+            if (CSVFile == null || CSVFile.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            try
+            {
+                var records = _csvFileReader.ReadCsvSimple(CSVFile.OpenReadStream());
+
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+
+                await _repository.AddRangeAsync(records);
+                await _repository.SaveChangesAsync();
+                return Ok("All Recoreds Added");
             }
             catch (Exception)
             {

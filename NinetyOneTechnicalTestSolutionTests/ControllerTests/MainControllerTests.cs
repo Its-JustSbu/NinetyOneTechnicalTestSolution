@@ -3,6 +3,7 @@ using Moq;
 using NinetyOneTechnicalTestSolution.Controllers;
 using NinetyOneTechnicalTestSolution.Models.DTOs;
 using NinetyOneTechnicalTestSolution.Repositories;
+using NinetyOneTechnicalTestSolution.utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,11 +13,13 @@ namespace NinetyOneTechnicalTestSolutionTests.ControllerTests
     public class MainControllerTests
     {
         private readonly Mock<IRepository> _mockRepository;
+        private readonly Mock<ICSVFileReader> _mockFileReader;
         private readonly MainController _controller;
         public MainControllerTests()
         {
             _mockRepository = new Mock<IRepository>();
-            _controller = new MainController(_mockRepository.Object);
+            _mockFileReader = new Mock<ICSVFileReader>();
+            _controller = new MainController(_mockRepository.Object, _mockFileReader.Object);
         }
 
         [Fact]
@@ -55,6 +58,11 @@ namespace NinetyOneTechnicalTestSolutionTests.ControllerTests
             Assert.Equal(2, returnValue.Count);
             Assert.Equal("Jane", returnValue[0].FirstName);
             Assert.Equal("John", returnValue[1].FirstName);
+        }
+        [Fact]
+        public async Task AddScores_ReturnsCreatedAtActionResult_AddsAllRecordsInCSVFileToDatabase()
+        {
+
         }
     }
 }
