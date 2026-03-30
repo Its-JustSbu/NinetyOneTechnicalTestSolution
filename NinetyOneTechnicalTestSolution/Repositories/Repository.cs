@@ -21,11 +21,9 @@ namespace NinetyOneTechnicalTestSolution.Repositories
             var entries = _appDbContext.Set<T>();
             return await entries.ToListAsync();
         }
-
-        async Task<IList<T>> IRepository.GetByAsync<T>(Expression<Func<T, bool>> expression)
+        async Task IRepository.SaveChangesAsync()
         {
-            var entries = _appDbContext.Set<T>().Where(expression).AsNoTracking();
-            return await entries.ToListAsync();
+            await _appDbContext.SaveChangesAsync();
         }
     }
 }

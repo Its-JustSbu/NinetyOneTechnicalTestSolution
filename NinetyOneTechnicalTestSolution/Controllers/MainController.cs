@@ -9,7 +9,7 @@ namespace NinetyOneTechnicalTestSolution.Controllers
     [ApiController]
     public class MainController : ControllerBase
     {
-        private readonly IRepository _repository; 
+        private readonly IRepository _repository;
         public MainController(IRepository repository)
         {
             _repository = repository;
@@ -26,6 +26,29 @@ namespace NinetyOneTechnicalTestSolution.Controllers
                 if (scores.Count == 0) return NotFound("No Top Scores Found");
 
                 return Ok(scores);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+                throw;
+            }
+        }
+        //GET: api/Main/TopScorers
+        [HttpGet("GetTopScorers")]
+        public async Task<IActionResult> GetTopScorers()
+        {
+            try
+            {
+                var scores = await _repository.GetAllAsync<Scores>();
+                var maxScore = scores.Max(s => s.Score);
+                var scorers = scores.Where(s => s.Score == maxScore)
+                    .OrderBy(scorer => scorer.FirstName)
+                    .ThenBy(scorer => scorer.LastName)
+                    .ToList();
+
+                if (scorers.Count == 0) return NotFound("No Top Scorers Found");
+
+                return Ok(scorers);
             }
             catch (Exception)
             {
